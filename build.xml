@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<project name="Blix" default="CreateJar">
+	<property name="src" location="src"/>
+	<property name="build" location="build" />
+  <target name="CreateJar" description="Create Jar file">
+  	<echo> Basedir: ${basedir} </echo>
+    <jar destfile="${build}/Blix.jar" basedir="bin" includes="io/github/woodenbell/blix/*.class" 
+  	manifest="bin/io/github/woodenbell/blix/MANIFEST.MF" />
+  </target>
+</project>
