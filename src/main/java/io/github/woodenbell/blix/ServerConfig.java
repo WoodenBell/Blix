@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * This class contains the basic server configurations.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  */
 
 public class ServerConfig {

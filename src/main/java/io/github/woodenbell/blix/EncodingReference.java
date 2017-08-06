@@ -3,10 +3,10 @@ package io.github.woodenbell.blix;
 import java.util.HashMap;
 
 /**
- * This class contains all the url codes for characters, used internally to 
+ * This class contains all the URL codes for characters, used internally to 
  * decode URLEncoded.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  */
 
 public class EncodingReference {

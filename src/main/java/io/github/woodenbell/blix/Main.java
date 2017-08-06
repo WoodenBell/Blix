@@ -23,7 +23,7 @@ import io.github.woodenbell.blix.ServerConfig;
 /**
  * This is the main class for running a static server.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  * 
  */
 

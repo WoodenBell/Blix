@@ -15,7 +15,7 @@ import java.io.File;
  * then to the handlers or static files. Also is responsible for responding with HTML error codes
  * if any of them occur.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  */
 
 public class Server {

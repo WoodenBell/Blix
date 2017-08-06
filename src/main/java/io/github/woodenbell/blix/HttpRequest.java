@@ -7,7 +7,7 @@ import java.util.Iterator;
  * The class representing the client request to the server. Passed
  * as argument to the RequestHandler.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  */
 
 public class HttpRequest {

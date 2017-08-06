@@ -6,7 +6,7 @@ import java.util.HashMap;
  * it's wrapped in this class and stored in a HashMap to be used internally by HttpRequest when needed.
  * to retrieve form data.
  * @author WoodenBell
- * @version 0.1
+ * @version 0.2
  */
 
 public class ParsedFormData {
