@@ -85,7 +85,7 @@ public class Main {
 		});
 	}
 	public static void defaultServerConfigLoader() {
-		ServerConfig.setPort(8008);
+		ServerConfig.setPort(8088);
 		ServerConfig.setRootDir("./ServerDir");
 		ServerConfig.setMimeType(".html", "text/html");
 		ServerConfig.setMimeType(".css", "text/css");

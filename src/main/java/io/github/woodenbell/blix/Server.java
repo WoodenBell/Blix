@@ -363,7 +363,7 @@ public class Server {
 	 */
 	private void showHtmlCode(String file, HttpResponse res) throws IOException {
 		byte[] data;
-		Path p = Paths.get("src/main/java/io/github/woodenbell/blix/" + file);
+		Path p = Paths.get(file);
 		data = Files.readAllBytes(p);
 		res.sendHeader("Content-Type", ServerConfig.getMimeType(".html"));
 		res.sendHeader("Content-Length", data.length + "");
