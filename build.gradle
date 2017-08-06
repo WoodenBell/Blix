@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '0.1'
+project.buildDir = 'build'
+
+
+task buildJar(type: Jar) {
+	println 'Building jar for ' + project.name + ' version ' + version
+	manifest {
+		attributes 'Main-Class' : 'io.github.woodenbell.blix.Main',
+		'Name' : 'io/github/woodenbell/blix',
+		'Sealed' : 'true',
+		'Specification-Title' : '"Blix Java Http Server"',
+		'Specification-Version' : '"0.1"',
+		'Specification-Vendor' : '"WoodenBell"',
+		'Implementation-Title' : '"io.github.woodenbell.blix"',
+		'Implementation-Version' : '"build1"',
+		'Implementation-Vendor' : '"WoodenBell"'
+	}
+	from 'bin'
+	include 'io/github/woodenbell/blix/*.class', 'io/github/woodenbell/blix/*.html' 
+	destinationDir = file(project.buildDir)
+
+}
+
+task genJavadoc(type: Javadoc) {
+	println 'Generating the javadoc documentation for ' + project.name
+	source = sourceSets.main.allJava
+}
+
+buildJar.dependsOn genJavadoc
