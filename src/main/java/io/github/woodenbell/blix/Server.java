@@ -73,11 +73,17 @@ public class Server {
 		htmlCodes.put("404", new RequestHandler() {
 			public void handleRequest(HttpRequest request, HttpResponse response) {
 				response.sendResponse(404, "Not Found");
-				try {
-					showHtmlCode("404.html", response);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				response.sendHeader("Content-Type", "text/html");
+				response.endHeaders();
+				response.write("<!DOCTYPE html>\r\n" + 
+						"<html>" + 
+						"<head>" + 
+						"<title>404</title>" + 
+						"</head>" + 
+						"<body>" + 
+						"<h1>404 Not Found</h1>" + 
+						"</body>" + 
+						"</html>");
 				response.endResponse();
 			}
 		});
@@ -85,11 +91,17 @@ public class Server {
 		htmlCodes.put("500", new RequestHandler() {
 			public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
 				response.sendResponse(500, "Internal Server Error");
-				try {
-					showHtmlCode("500.html", response);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				response.sendHeader("Content-Type", "text/html");
+				response.endHeaders();
+				response.write("<!DOCTYPE html>" + 
+						"<html>" + 
+						"<head>" + 
+						"<title>500</title>" + 
+						"</head>" + 
+						"<body>" + 
+						"<h1>500 Internal Server Error</h1>" + 
+						"</body>" + 
+						"</html>");
 				response.endResponse();
 			}
 			
@@ -354,22 +366,6 @@ public class Server {
 		response.endResponse();
 	}
 	
-	/**
-	 * Internally used to respond with a HTTP code response message.
-	 * @param file The HTML file name.
-	 * @param res The HTTPResponse object used to write the file content.
-	 * @throws IOException Either errors while reading the file or errors while writing the response.
-	 * @see IOException
-	 */
-	private void showHtmlCode(String file, HttpResponse res) throws IOException {
-		byte[] data;
-		Path p = Paths.get(file);
-		data = Files.readAllBytes(p);
-		res.sendHeader("Content-Type", ServerConfig.getMimeType(".html"));
-		res.sendHeader("Content-Length", data.length + "");
-		res.endHeaders();
-		res.writeBytes(data);
-	}
 	
 	/**
 	 * Overloaded static get method to add the index HTML file at the end of the request path
