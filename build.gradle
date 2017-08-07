@@ -15,7 +15,7 @@ task buildJar(type: Jar) {
 		'Specification-Version' : '"' + version + '"',
 		'Specification-Vendor' : '"WoodenBell"',
 		'Implementation-Title' : '"io.github.woodenbell.blix"',
-		'Implementation-Version' : '"build2"',
+		'Implementation-Version' : '"build3"',
 		'Implementation-Vendor' : '"WoodenBell"'
 	}
 	from 'bin'

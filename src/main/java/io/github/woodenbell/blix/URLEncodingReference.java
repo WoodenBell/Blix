@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @version 0.2
  */
 
-public class EncodingReference {
+public class URLEncodingReference {
 	
 	/**
 	 * HashMap containing all URL codes and their respective characters.

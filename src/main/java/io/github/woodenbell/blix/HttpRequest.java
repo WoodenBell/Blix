@@ -1,7 +1,6 @@
 package io.github.woodenbell.blix;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * The class representing the client request to the server. Passed
@@ -13,10 +12,10 @@ import java.util.Iterator;
 public class HttpRequest {
 	
 	/**
-	 * Internally used to store GET variables in the URL path request.
+	 * Query string variables present in the URL
 	 */
 	
-	private HashMap<String, String> urlVars;
+	private HashMap<String, String> queryString;
 	
 	/**
 	 * The internally used hashMap that contains the  request headers.
@@ -61,7 +60,7 @@ public class HttpRequest {
 		hasFormData = false;
 		form = null;
 		requestHeaders = reqHeaders;
-		urlVars = null;
+		queryString = null;
 	}
 	
 	/**
@@ -77,49 +76,30 @@ public class HttpRequest {
 		hasFormData = true;
 		this.form = form;
 		requestHeaders = reqHeaders;
-		urlVars = null;
+		queryString = null;
 	}
 	
 	
 	/**
-	 * Internally used to set the parsed URL variables HashMap.
-	 * @param parsedVars The URL data parsed by FormParser that needs to
-	 * be converted to HashMap&lt;String, String&gt;.
+	 * Internally used to set the parsed query string HashMap.
+	 * @param parsedVars The query string parsed by Util
+	 * @see io.github.woodenbell.blix.Util#parseQueryString(String)
 	 */
-	public void setUrlData(HashMap<String, ParsedFormData> parsedVars) {
-		if(parsedVars == null) {
-			urlVars = null;
-			return;
-		}
-		HashMap<String, String> urlVariables = new HashMap<>();
-		Iterator<String> iter = parsedVars.keySet().iterator();
-		String itered = "";
-		StringBuilder builder = new StringBuilder();
-		int[] intData = null;
-		
-		while(iter.hasNext()) {
-			builder.setLength(0);
-			itered = iter.next();
-			intData = parsedVars.get(itered).content;
-			for(int i : intData) {
-				builder.append((char) i);
-			}
-			urlVariables.put(itered, builder.toString());
-		}
-		
-		urlVars = urlVariables;
+	public void setQueryString(HashMap<String, String> parsedVars) {
+		if(parsedVars == null) return;
+		queryString = new HashMap<>(parsedVars);
 	}
 	
 	/**
-	 * Gets the URL variable value for name.
-	 * @param name The name of the URL variable.
-	 * @return The variable value or null if there's no URL variables or
-	 * the variable with the specified name cannot be found. 
+	 * Gets the query string value for name.
+	 * @param name The name of the query string value.
+	 * @return The value or null if there's no query string or
+	 * the value with the specified name cannot be found. 
 	 */
 	
-	public String getURLVariable(String name) {
-		if(urlVars == null) return null;
-		return urlVars.get(name);
+	public String getQueryStringValue(String name) {
+		if(queryString == null) return null;
+		return queryString.get(name);
 	}
 	
 	/**
@@ -142,15 +122,8 @@ public class HttpRequest {
 		if(form == null) return null;
 		if(form.get(name) == null) return null;
 		int[] intArray = form.get(name).content;
-		if(intArray == null) {
-			return null;
-		} else {
-			StringBuilder valueStr = new StringBuilder();
-			for(int v : intArray) {
-				valueStr.append((char) v);
-			}
-			return valueStr.toString();
-		}
+		if(intArray == null) return null;
+		return Util.intArrayToStr(form.get(name).content);
 	}
 	
 	/**
@@ -211,8 +184,7 @@ public class HttpRequest {
 	public int[] getFormValueInt(String name) {
 		if(form == null) return null;
 		if(form.get(name) == null) return null;
-		int[] intArray = form.get(name).content;
-		return intArray;
+		return form.get(name).content;
 	}
 	
 }

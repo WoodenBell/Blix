@@ -60,7 +60,7 @@ public class FormParser {
 					encodedChar.append(c);
 					encodingCount = 0;
 					gettingEncoded = false;
-					char chr = EncodingReference.urlEncoded.get(encodedChar.toString().toString());
+					char chr = URLEncodingReference.urlEncoded.get(encodedChar.toString().toString());
 					encodedChar.setLength(0);
 					int vl = (int) chr;
 					if (fieldOrValueRead) {

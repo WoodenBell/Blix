@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Implementation-Title: "io.github.woodenbell.blix"
-Implementation-Version: "build2"
+Implementation-Version: "build3"
 Sealed: true
 Specification-Vendor: "WoodenBell"
 Name: io/github/woodenbell/blix

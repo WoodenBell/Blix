@@ -1,7 +1,8 @@
 package io.github.woodenbell.blix;
 
+
 import io.github.woodenbell.blix.Server;
-import io.github.woodenbell.blix.ServerConfig;
+
 
 /*
       Copyright 2017 WoodenBell
@@ -37,31 +38,36 @@ public class Main {
 	
 	public static void main(String[] args) {
 			System.out.println("Starting default static server");
-			int defPort  = 8008;
+			final int defPort  = 8008;
+			final String defDir = "";
+			int port = defPort;
+			String dir = defDir;
 			if(args.length > 0) {
-				defPort = Integer.parseInt(args[0]);
+				port = Integer.parseInt(args[0]);
+				if(args.length > 1) {
+					dir = args[1];
+				}
 			}
-			defaultServerConfigLoader(defPort);
-			Server blix = new Server();
+			Server blix = new Server(port);
+			blix.getConfig().setRootDir(dir);
+			defaultServerMIMETypeLoader(blix);
 			blix.startServer();
 	}
 	
 	/**
-	 * Loads the default configuration (without routes) to the server.
-	 * @param defPort The port used by the server
+	 * Loads the default configuration MIME types to the server.
+	 * @param server The server that will load the MIME type configuration.
 	 */
 	
-	public static void defaultServerConfigLoader(int defPort) {
-		ServerConfig.setPort(defPort);
-		ServerConfig.setRootDir("./ServerDir");
-		ServerConfig.setMimeType(".html", "text/html");
-		ServerConfig.setMimeType(".css", "text/css");
-		ServerConfig.setMimeType(".txt", "text/plain");
-		ServerConfig.setMimeType(".js", "text/javascript");
-		ServerConfig.setMimeType(".json", "application/json");
-		ServerConfig.setMimeType(".jpg", "image/jgp");
-		ServerConfig.setMimeType(".png", "image/png");
-		ServerConfig.setMimeType(".ico", "image/x-icon");
+	public static void defaultServerMIMETypeLoader(Server server) {
+		server.getConfig().setMimeType(".html", "text/html");
+		server.getConfig().setMimeType(".css", "text/css");
+		server.getConfig().setMimeType(".txt", "text/plain");
+		server.getConfig().setMimeType(".js", "text/javascript");
+		server.getConfig().setMimeType(".json", "application/json");
+		server.getConfig().setMimeType(".jpg", "image/jgp");
+		server.getConfig().setMimeType(".png", "image/png");
+		server.getConfig().setMimeType(".ico", "image/x-icon");
 	}
 	//
 }

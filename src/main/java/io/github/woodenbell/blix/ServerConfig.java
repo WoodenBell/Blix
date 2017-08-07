@@ -10,16 +10,17 @@ import java.util.HashMap;
 
 public class ServerConfig {
 	
-	public static String rootDir;
-	public static int port;
-	public static HashMap<String, String> mimeTypes = new HashMap<String, String>();
+	
+	private String rootDir;
+	private int port;
+	private HashMap<String, String> mimeTypes = new HashMap<String, String>();
 	
 	
 	/**
 	 * This method sets the root directory for static requests.
 	 * @param newRootDir The directory that will be set as root.
 	 */
-	public static void setRootDir(String newRootDir) {
+	public void setRootDir(String newRootDir) {
 		rootDir = newRootDir;
 	}
 	
@@ -28,7 +29,7 @@ public class ServerConfig {
 	 * @param newPort The port that will be used by the server.
 	 */
 	
-	public static void setPort(int newPort) {
+	public void setPort(int newPort) {
 		port = newPort;
 	}
 	
@@ -37,7 +38,7 @@ public class ServerConfig {
 	 * @return The server directory used for static requests.
 	 */
 	
-	public static String getRootDir() {
+	public String getRootDir() {
 		return rootDir;
 	}
 	
@@ -46,7 +47,7 @@ public class ServerConfig {
 	 * @return The port used by the server.
 	 */
 	
-	public static int getPort() {
+	public int getPort() {
 		return port;
 	}
 	
@@ -56,7 +57,7 @@ public class ServerConfig {
 	 * @param mimeType The MIME type.
 	 */
 	
-	public static void setMimeType(String fileType, String mimeType) {
+	public void setMimeType(String fileType, String mimeType) {
 		mimeTypes.put(fileType, mimeType);
 	}
 	
@@ -66,7 +67,7 @@ public class ServerConfig {
 	 * @return The MIME type for the specified file extension, or null if not found.
 	 */
 	
-	public static String getMimeType(String fileType) {
+	public String getMimeType(String fileType) {
 		return mimeTypes.get(fileType);
 	}
 }

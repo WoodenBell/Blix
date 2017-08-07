@@ -6,14 +6,15 @@ import io.github.woodenbell.blix.HttpRequest;
 import io.github.woodenbell.blix.HttpResponse;
 import io.github.woodenbell.blix.RequestHandler;
 import io.github.woodenbell.blix.Server;
-import io.github.woodenbell.blix.ServerConfig;
+
 
 
 public class Main {
 
 	public static void main(String[] args) {
-			defaultServerConfigLoader();
-			Server blix = new Server();
+			final int port = 8008;
+			Server blix = new Server(port);
+			defaultServerConfigLoader(blix);
 			defaultRouteLoader(blix);
 			blix.startServer();
 	}
@@ -21,7 +22,7 @@ public class Main {
 		s.addGetRoute("/test", new RequestHandler(){
 			public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
 				response.sendResponse(200, "OK");
-				response.sendHeader("Content-Type", ServerConfig.getMimeType(".html"));
+				response.sendHeader("Content-Type", s.getConfig().getMimeType(".html"));
 				response.endHeaders();
 				response.write("<!DOCTYPE html>"
 						+ "<html>"
@@ -30,9 +31,9 @@ public class Main {
 						+ "</head>"
 						+ "<body>"
 						+ "<p>hello</p>"
-						+ (request.getURLVariable("hello") != null ? request.getURLVariable("hello") : "")
+						+ (request.getQueryStringValue("hello") != null ? request.getQueryStringValue("hello") : "")
 						+ "<br />"
-						+ (request.getURLVariable("there") != null ? request.getURLVariable("there") : "")
+						+ (request.getQueryStringValue("there") != null ? request.getQueryStringValue("there") : "")
 						+ "</body>"
 						+ "</html>");
 				response.endResponse();
@@ -41,7 +42,7 @@ public class Main {
 		s.addPostRoute("/post_handler", new RequestHandler() {
 			public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
 				response.sendResponse(200, "OK");
-				response.sendHeader("Content-Type", ServerConfig.getMimeType(".html"));
+				response.sendHeader("Content-Type", s.getConfig().getMimeType(".html"));
 				response.endHeaders();
 				response.write("<!DOCTYPE html>"
 						+ "<html>"
@@ -74,7 +75,7 @@ public class Main {
 				System.out.println("File sucefully uploaded");
 				fout.close();
 				response.sendResponse(200, "OK");
-				response.sendHeader("Content-Type", ServerConfig.getMimeType(".html"));
+				response.sendHeader("Content-Type", s.getConfig().getMimeType(".html"));
 				response.endHeaders();
 				response.write("File uploaded");
 				response.write("<br /> Name:" + request.getFormValueString("name"));
@@ -84,17 +85,16 @@ public class Main {
 			}
 		});
 	}
-	public static void defaultServerConfigLoader() {
-		ServerConfig.setPort(8088);
-		ServerConfig.setRootDir("./ServerDir");
-		ServerConfig.setMimeType(".html", "text/html");
-		ServerConfig.setMimeType(".css", "text/css");
-		ServerConfig.setMimeType(".txt", "text/plain");
-		ServerConfig.setMimeType(".js", "text/javascript");
-		ServerConfig.setMimeType(".json", "application/json");
-		ServerConfig.setMimeType(".jpg", "image/jgp");
-		ServerConfig.setMimeType(".png", "image/png");
-		ServerConfig.setMimeType(".ico", "image/x-icon");
+	public static void defaultServerConfigLoader(Server s) {
+		s.getConfig().setRootDir("./ServerDir");
+		s.getConfig().setMimeType(".html", "text/html");
+		s.getConfig().setMimeType(".css", "text/css");
+		s.getConfig().setMimeType(".txt", "text/plain");
+		s.getConfig().setMimeType(".js", "text/javascript");
+		s.getConfig().setMimeType(".json", "application/json");
+		s.getConfig().setMimeType(".jpg", "image/jgp");
+		s.getConfig().setMimeType(".png", "image/png");
+		s.getConfig().setMimeType(".ico", "image/x-icon");
 	}
 	//
 }

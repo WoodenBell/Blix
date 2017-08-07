@@ -2,7 +2,6 @@
 -doctitle 'Blix 0.2 API'
 -quiet 
 -windowtitle 'Blix 0.2 API'
-'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\EncodingReference.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\FormParser.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\HttpRequest.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\HttpResponse.java'
@@ -11,4 +10,6 @@
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\RequestHandler.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\Server.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\ServerConfig.java'
+'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\URLEncodingReference.java'
+'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\io\\github\\woodenbell\\blix\\Util.java'
 'C:\\Users\\Gabriel C\\Desktop\\workspace2\\Blix\\src\\main\\java\\Main.java'

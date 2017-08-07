@@ -1,13 +1,13 @@
 package io.github.woodenbell.blix;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.File;
 
 /**
@@ -19,6 +19,14 @@ import java.io.File;
  */
 
 public class Server {
+	
+	/**
+	 * The server configuration object. The object contains the port, root directory and MIME types, that
+	 * can be retrieved and set by the user using it's setters and getters.
+	 * @see io.github.woodenbell.blix.ServerConfig
+	 */
+	
+	private final ServerConfig config;
 	
 	/**
 	 * The server socket that will accept all client requests. Used internally.
@@ -55,10 +63,12 @@ public class Server {
 	/**
 	 * The server constructor. Initializes the HTTP codes HashMap that will be used
 	 * internally when an error occurs.
+	 * @param port The port that will be used by the server.
 	 */
 	
-	public Server() {
-		int port = ServerConfig.getPort();
+	public Server(int port) {
+		config = new ServerConfig();
+		config.setPort(port);
 		getRoutes = new HashMap<String, RequestHandler>();
 		postRoutes = new HashMap<String, RequestHandler>();
 		try {
@@ -115,7 +125,8 @@ public class Server {
 	 */
 	
 	public void startServer() {
-			System.out.println("Server started at port " + ServerConfig.getPort());
+			System.out.println("Server started at port " + config.getPort());
+			System.out.println("Running at " + getCWD());
 			serverRunning = true;
 			handleLoop();
 	}
@@ -243,7 +254,6 @@ public class Server {
 				int c;
 				while(rd.available() > 0 && (c = rd.read()) != -1) {
 					formData[count] = c;
-					//System.out.print((char) c);
 					count++;
 				}
 				System.out.print("\n");
@@ -267,25 +277,22 @@ public class Server {
 			}
 			String[] reqMethStr = reqData[0].split(" ");
 			String method = reqMethStr[0];
-			HashMap<String, ParsedFormData> getURLVars = null;
+			HashMap<String, String> queryStr = null;
 			String path;
 			if(reqMethStr[1].contains("?")) {
-				String urlVars = reqMethStr[1].split("\\?")[1];
-				int[] tempData = new int[reqMethStr[1].split("\\?")[1].length()];
-				for(int i = 0; i < tempData.length; i++) {
-					tempData[i] = (int) urlVars.charAt(i);
-				}
-				getURLVars = FormParser.parseFormURLEncoded(tempData);
+				String qrStr = reqMethStr[1].split("\\?")[1];
+				queryStr = Util.parseQueryString(qrStr);
 				path = parseURLEncoded(reqMethStr[1].split("\\?")[0]);
 			} else {
 				path = parseURLEncoded(reqMethStr[1]);
 			}
 			
 			HttpRequest req = new HttpRequest(path, method, reqDict, form);
-			req.setUrlData(getURLVars);
+			req.setQueryString(queryStr);
 			HttpResponse res = new HttpResponse(client);
 			
-			File f = new File(ServerConfig.getRootDir() + path);
+			File f = new File(getCWD() + config.getRootDir() + path);
+			System.out.println("Checking for files in " + getCWD() + config.getRootDir() + path);
 			if(method.equals("GET")) {
 				try {
 					System.out.println("Get request");
@@ -294,7 +301,7 @@ public class Server {
 					if(f.exists()) {
 						if(f.isDirectory()) {
 							System.out.println("Path is a directory. Checking for index files");
-							File f2 = new File(ServerConfig.getRootDir() + path + "/index.html");
+							File f2 = new File(config.getRootDir() + path + "/index.html");
 							if(f2.exists()) {
 								if(f2.isFile()) {
 									System.out.println("index.html found");
@@ -303,7 +310,7 @@ public class Server {
 								htmlCodes.get("404").handleRequest(req, res);
 							}
 						} else {
-							File f3 = new File(ServerConfig.getRootDir() + path + "/index.htm");
+							File f3 = new File(config.getRootDir() + path + "/index.htm");
 							if(f3.exists()) {
 								if(f3.isFile()) {
 									System.out.println("index.htm found");
@@ -318,7 +325,11 @@ public class Server {
 			} 
 			if(f.isFile()) {
 				System.out.println("Path is file. Doing static request");
+				try {
 				doStaticGet(req, res);
+				} catch(IOException ioe) {
+					ioe.printStackTrace();
+				}
 			}
 				} else {
 					htmlCodes.get("404").handleRequest(req, res);
@@ -350,15 +361,17 @@ public class Server {
 	 */
 	
 	private void doStaticGet(HttpRequest request, HttpResponse response) throws IOException {
+		System.out.println("Receiving static request for " + getCWD() + 
+				config.getRootDir() + request.path);
 		byte[] data;
-		Path p = Paths.get(ServerConfig.getRootDir() + request.path);
+		Path p = Paths.get(getCWD() + config.getRootDir() + request.path);
 		data = Files.readAllBytes(p);
 		response.sendResponse(200, "OK");
 		String mimeType;
 		String pathFile = request.path.split("/")[request.path.split("/").length - 1];
 		String fileExtension = pathFile.split("\\.")[pathFile.split("\\.").length - 1];
 		System.out.println("File of extension " + fileExtension);
-		mimeType = ServerConfig.getMimeType("." + fileExtension);
+		mimeType = config.getMimeType("." + fileExtension);
 		response.sendHeader("Content-Type", mimeType);
 		response.sendHeader("Content-Length", data.length + "");
 		response.endHeaders();
@@ -430,7 +443,7 @@ public class Server {
 					encodedChar.append(c);
 					encodingCount = 0;
 					gettingEncoded = false;
-					char chr = EncodingReference.urlEncoded.get(encodedChar.toString().toString());
+					char chr = URLEncodingReference.urlEncoded.get(encodedChar.toString().toString());
 					encodedChar.setLength(0);
 					finalURL.append(chr);
 				}
@@ -443,5 +456,13 @@ public class Server {
 			finalURL.append(c);
 		}
 		return finalURL.toString();
+	}
+	
+	private String getCWD() {
+		return Paths.get("").toAbsolutePath().toString();
+	}
+	
+	public ServerConfig getConfig() {
+		return config;
 	}
 }
