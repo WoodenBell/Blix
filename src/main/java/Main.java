@@ -86,6 +86,8 @@ public class Main {
 		});
 	}
 	public static void defaultServerConfigLoader(Server s) {
+		s.getConfig().setUseCache(true);
+		s.getConfig().setCacheTime(10000);
 		s.getConfig().setRootDir("./ServerDir");
 		s.getConfig().setMimeType(".html", "text/html");
 		s.getConfig().setMimeType(".css", "text/css");

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = '0.2'
+version = '0.3'
 project.buildDir = 'build'
 
 
@@ -15,7 +15,7 @@ task buildJar(type: Jar) {
 		'Specification-Version' : '"' + version + '"',
 		'Specification-Vendor' : '"WoodenBell"',
 		'Implementation-Title' : '"io.github.woodenbell.blix"',
-		'Implementation-Version' : '"build3"',
+		'Implementation-Version' : '"build4"',
 		'Implementation-Vendor' : '"WoodenBell"'
 	}
 	from 'bin'

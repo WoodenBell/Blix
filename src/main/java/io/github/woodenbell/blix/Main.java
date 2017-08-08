@@ -24,7 +24,7 @@ import io.github.woodenbell.blix.Server;
 /**
  * This is the main class for running a static server.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  * 
  */
 

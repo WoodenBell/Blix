@@ -8,7 +8,7 @@ import java.net.Socket;
  * The class representing the HTTPResponse to the client, used to write the response and send the headers
  * and status code.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class HttpResponse {

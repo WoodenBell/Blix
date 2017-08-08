@@ -1,13 +1,14 @@
 package io.github.woodenbell.blix;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.regex.*;
 
 /**
  * Internal utilities class.
  * @author WoodenBell
- * @version 0.2
- *
+ * @version 0.3
+ * @since 0.3
  */
 
 public class Util {
@@ -68,5 +69,22 @@ public class Util {
 			parsed.put(decodeURLEncoded(kv[0]), decodeURLEncoded(kv[1]));
 		}
 		return parsed;
+	}
+	
+	/**
+	 * Gets the current working directory.
+	 * @return The current working directory.
+	 */
+	
+	public static String getCWD() {
+		return Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/");
+	}
+	
+	public static class ByteArray {
+		public byte[] content;
+		
+		public ByteArray(byte[] content) {
+			this.content = content;
+		}
 	}
 }

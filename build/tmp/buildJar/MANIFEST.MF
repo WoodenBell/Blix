@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Implementation-Title: "io.github.woodenbell.blix"
-Implementation-Version: "build3"
+Implementation-Version: "build4"
 Sealed: true
 Specification-Vendor: "WoodenBell"
 Name: io/github/woodenbell/blix
 Specification-Title: "Blix Java Http Server"
-Specification-Version: "0.2"
+Specification-Version: "0.3"
 Main-Class: io.github.woodenbell.blix.Main
 Implementation-Vendor: "WoodenBell"
 

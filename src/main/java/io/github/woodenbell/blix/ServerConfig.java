@@ -5,16 +5,31 @@ import java.util.HashMap;
 /**
  * This class contains the basic server configurations.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class ServerConfig {
 	
-	
-	private String rootDir;
 	private int port;
-	private HashMap<String, String> mimeTypes = new HashMap<String, String>();
+	private String rootDir;
+	private HashMap<String, String> mimeTypes;
+	private boolean useCache;
+	private int cacheTime;
+	private boolean debugMode;
 	
+	
+	/**
+	 *  Initializes the default values.
+	 */
+	
+	public ServerConfig() {
+		port = 8008;
+		rootDir = "";
+		useCache = false;
+		cacheTime = 0;
+		mimeTypes  = new HashMap<String, String>();
+		debugMode = false;
+	}
 	
 	/**
 	 * This method sets the root directory for static requests.
@@ -69,6 +84,63 @@ public class ServerConfig {
 	
 	public String getMimeType(String fileType) {
 		return mimeTypes.get(fileType);
+	}
+	
+	/**
+	 * Sets the cache data time to expire.
+	 * @param cacheTime The time in milliseconds until the cached data expires.
+	 */
+	
+	public void setCacheTime(int cacheTime) {
+		this.cacheTime = cacheTime;
+	}
+	
+	/**
+	 * Gets the cached data time until it expires.
+	 * @return The time in milliseconds until the cached data expires.
+	 */
+	
+	public int getCacheTime() {
+		return cacheTime;
+	}
+	
+	/**
+	 * Sets if the cache should be used or not.
+	 * @param useCache If the cache should be used or not.
+	 * @see io.github.woodenbell.blix.cache.MapCacheManager
+	 */
+	
+	public void setUseCache(boolean useCache) {
+		this.useCache = useCache;
+	}
+	
+	
+	/**
+	 * Returns if the cache should be used or not.
+	 * @return If the cache should be used.
+	 * @see io.github.woodenbell.blix.cache.MapCacheManager
+	 */
+	
+	public boolean getUseCache() {
+		return useCache;
+	}
+	
+	/**
+	 * Sets debug mode on/off.
+	 * @param debugMode If the debug mode 
+	 */
+	
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+	
+	/**
+	 * Returns if debug mode is on
+	 * @return If debug mode is on
+	 */
+	
+	public boolean getDebugMode() {
+		return debugMode;
 	}
 }
 

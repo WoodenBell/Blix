@@ -6,7 +6,7 @@ import java.io.IOException;
  * The interface for the request handler. Any class that want to handle the requests received by the server
  * must implement this interface.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public interface RequestHandler {

@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import io.github.woodenbell.blix.cache.MapCacheManager;
+
 import java.nio.file.Files;
 import java.io.File;
 
@@ -15,10 +18,18 @@ import java.io.File;
  * then to the handlers or static files. Also is responsible for responding with HTML error codes
  * if any of them occur.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class Server {
+	
+	
+	private MapCacheManager<Util.ByteArray> mapCache;
+	
+	/**
+	 * Responsible for allowing or denying static requests. Allows every request by default.
+	 */
+	private StaticAccessController staticController;
 	
 	/**
 	 * The server configuration object. The object contains the port, root directory and MIME types, that
@@ -58,7 +69,7 @@ public class Server {
 	 * The  HashMap containing the HTTP codes and their respective handlers.
 	 */
 	
-	private static HashMap<String, RequestHandler> htmlCodes;
+	private static HashMap<String, RequestHandler> httpCodes;
 	
 	/**
 	 * The server constructor. Initializes the HTTP codes HashMap that will be used
@@ -71,6 +82,11 @@ public class Server {
 		config.setPort(port);
 		getRoutes = new HashMap<String, RequestHandler>();
 		postRoutes = new HashMap<String, RequestHandler>();
+		staticController = new StaticAccessController() {
+			public boolean controlStaticRequest(HttpRequest req) {
+				return true;
+			}
+		};
 		try {
 		server = new ServerSocket(port);
 		} catch(IOException e) {
@@ -79,8 +95,25 @@ public class Server {
 			serverRunning = false;
 			System.exit(-1);
 		}
-		htmlCodes = new HashMap<String, RequestHandler>();
-		htmlCodes.put("404", new RequestHandler() {
+		httpCodes = new HashMap<String, RequestHandler>();
+		httpCodes.put("403", new RequestHandler() {
+			public void handleRequest(HttpRequest request, HttpResponse response) {
+				response.sendResponse(403, "Forbidden");
+				response.sendHeader("Content-Type", "text/html");
+				response.endHeaders();
+				response.write("<!DOCTYPE html>\r\n" + 
+						"<html>" + 
+						"<head>" + 
+						"<title>403</title>" + 
+						"</head>" + 
+						"<body>" + 
+						"<h1>403 Forbidden</h1>" + 
+						"</body>" + 
+						"</html>");
+				response.endResponse();
+			}
+		});
+		httpCodes.put("404", new RequestHandler() {
 			public void handleRequest(HttpRequest request, HttpResponse response) {
 				response.sendResponse(404, "Not Found");
 				response.sendHeader("Content-Type", "text/html");
@@ -98,7 +131,7 @@ public class Server {
 			}
 		});
 		
-		htmlCodes.put("500", new RequestHandler() {
+		httpCodes.put("500", new RequestHandler() {
 			public void handleRequest(HttpRequest request, HttpResponse response) throws IOException {
 				response.sendResponse(500, "Internal Server Error");
 				response.sendHeader("Content-Type", "text/html");
@@ -119,6 +152,15 @@ public class Server {
 	}
 	
 	/**
+	 * Sets the new controller for static requests.
+	 * @param controller The new static requests controller.
+	 */
+	
+	public void setStaticRequestController(StaticAccessController controller) {
+		staticController = controller;
+	}
+	
+	/**
 	 * Starts the server loop and prints the used port to the console.
 	 * Each new client socket will be accepted in the server loop and handled  in
 	 * a separated Thread
@@ -126,7 +168,9 @@ public class Server {
 	
 	public void startServer() {
 			System.out.println("Server started at port " + config.getPort());
-			System.out.println("Running at " + getCWD());
+			System.out.println("Running at " + Util.getCWD());
+			if(config.getUseCache()) mapCache = new MapCacheManager<Util.ByteArray>();
+			else mapCache = null;
 			serverRunning = true;
 			handleLoop();
 	}
@@ -138,7 +182,7 @@ public class Server {
 	 */
 	
 	public void setCodeHandler(int code, RequestHandler handler) {
-		htmlCodes.put(code + "", handler);
+		httpCodes.put(code + "", handler);
 	}
 	
 	
@@ -191,7 +235,7 @@ public class Server {
 					out.close();
 				} catch(IOException ioe) {
 					try {
-						htmlCodes.get("500").handleRequest(new HttpRequest("", "", new HashMap<String, String>()),
+						httpCodes.get("500").handleRequest(new HttpRequest("", "", new HashMap<String, String>()),
 								new HttpResponse(client));
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -291,8 +335,8 @@ public class Server {
 			req.setQueryString(queryStr);
 			HttpResponse res = new HttpResponse(client);
 			
-			File f = new File(getCWD() + config.getRootDir() + path);
-			System.out.println("Checking for files in " + getCWD() + config.getRootDir() + path);
+			File f = new File(Util.getCWD() + config.getRootDir() + path);
+			System.out.println("Checking for files in " + Util.getCWD() + config.getRootDir() + path);
 			if(method.equals("GET")) {
 				try {
 					System.out.println("Get request");
@@ -307,7 +351,7 @@ public class Server {
 									System.out.println("index.html found");
 									doStaticGet(req, res, "index.html");
 							} else {
-								htmlCodes.get("404").handleRequest(req, res);
+								httpCodes.get("404").handleRequest(req, res);
 							}
 						} else {
 							File f3 = new File(config.getRootDir() + path + "/index.htm");
@@ -316,10 +360,10 @@ public class Server {
 									System.out.println("index.htm found");
 									doStaticGet(req, res, "index.htm");
 							} else {
-								htmlCodes.get("404").handleRequest(req, res);
+								httpCodes.get("404").handleRequest(req, res);
 							}
 						} else {
-							htmlCodes.get("404").handleRequest(req, res);
+							httpCodes.get("404").handleRequest(req, res);
 						}
 				}
 			} 
@@ -332,7 +376,7 @@ public class Server {
 				}
 			}
 				} else {
-					htmlCodes.get("404").handleRequest(req, res);
+					httpCodes.get("404").handleRequest(req, res);
 				}
 			}
 			}
@@ -340,20 +384,20 @@ public class Server {
 				try {
 					System.out.println("Post request");
 					if(postRoutes.get(path) == null) {
-						htmlCodes.get("404").handleRequest(req, res);
+						httpCodes.get("404").handleRequest(req, res);
 					} else {
 						postRoutes.get(path).handleRequest(req, res);
 					}
 				} catch(Exception e) {
 						e.printStackTrace();
-						htmlCodes.get("500").handleRequest(req, res);
+						httpCodes.get("500").handleRequest(req, res);
 				} 
 		}
 		
 	}
 	
 	/**
-	 * Internally used to respond with static content.
+	 * Internally used to respond with static content. If forbidden, send 403 response.
 	 * @param request The object representing the HTTPRequest. made by the client.
 	 * @param response The object representing the HHTPResponse used to write the response.
 	 * @throws IOException Errors while reading the file data.
@@ -361,10 +405,27 @@ public class Server {
 	 */
 	
 	private void doStaticGet(HttpRequest request, HttpResponse response) throws IOException {
-		System.out.println("Receiving static request for " + getCWD() + 
+		System.out.println("Receiving static request for " + Util.getCWD() + 
 				config.getRootDir() + request.path);
+		if(!staticController.controlStaticRequest(request)) {
+			httpCodes.get("403").handleRequest(request, response);
+		}
+		
 		byte[] data;
-		Path p = Paths.get(getCWD() + config.getRootDir() + request.path);
+		
+		if(mapCache.isEmpty(request.path)) {
+			Path p = Paths.get(Util.getCWD() + config.getRootDir() + request.path);
+			data = Files.readAllBytes(p);
+			mapCache.put(request.path, new Util.ByteArray(data), 0x0, config.getCacheTime());
+		} else {
+			data = mapCache.get(request.path) == null ? null : mapCache.get(request.path).content;
+			if(data == null) {
+				Path p = Paths.get(Util.getCWD() + config.getRootDir() + request.path);
+				data = Files.readAllBytes(p);
+				mapCache.put(request.path, new Util.ByteArray(data), 0x0, config.getCacheTime());
+			} else System.out.println("Returning cache content for " + request.path);			
+		}
+		Path p = Paths.get(Util.getCWD() + config.getRootDir() + request.path);
 		data = Files.readAllBytes(p);
 		response.sendResponse(200, "OK");
 		String mimeType;
@@ -458,9 +519,11 @@ public class Server {
 		return finalURL.toString();
 	}
 	
-	private String getCWD() {
-		return Paths.get("").toAbsolutePath().toString();
-	}
+	/**
+	 * Gets the server configuration object.
+	 * @return The server configuration object.
+	 * @see io.github.woodenbell.blix.ServerConfig
+	 */
 	
 	public ServerConfig getConfig() {
 		return config;

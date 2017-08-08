@@ -6,7 +6,7 @@ import java.util.HashMap;
  * This class contains all the URL codes for characters, used internally to 
  * decode URLEncoded.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class URLEncodingReference {

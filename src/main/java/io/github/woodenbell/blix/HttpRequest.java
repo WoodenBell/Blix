@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 /**
  * The class representing the client request to the server. Passed
- * as argument to the RequestHandler.
+ * as argument to RequestHandler when a request is received.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class HttpRequest {
@@ -64,7 +64,7 @@ public class HttpRequest {
 	}
 	
 	/**
-	 * Overloaded constructor internally used that can also accepts parsed form data.
+	 * Overloaded constructor internally used that accepts parsed form data.
 	 * @param path The server request path.
 	 * @param method The HTTP request method.
 	 * @param reqHeaders The HTTP request headers.

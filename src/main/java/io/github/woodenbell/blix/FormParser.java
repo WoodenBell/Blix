@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Internally used class that parses form data found in the request body.
  * @author WoodenBell
- * @version 0.2
+ * @version 0.3
  */
 
 public class FormParser {
