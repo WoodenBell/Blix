@@ -1,5 +1,9 @@
 package io.github.woodenbell.blix;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.regex.*;
@@ -79,6 +83,54 @@ public class Util {
 	public static String getCWD() {
 		return Paths.get("").toAbsolutePath().toString().replaceAll("\\\\", "/");
 	}
+
+	/**
+	 * Creates a HTML page for directory view.
+	 * @param p The path that will be viewed.
+	 * @param serverPath The requested  URL.
+	 * @param rootDir The root directory of the server (used to fix path relativity).
+	 * @return The string containing the HTML for the directory view.
+	 * @throws IOException Errors when creating a new DirectoryStream
+	 * @see DirectoryStream
+	 */
+	
+	public static String htmlDirView(Path p, String serverPath, String rootDir) throws IOException {
+		DirectoryStream<Path> dirStream = Files.newDirectoryStream(p);
+		StringBuilder htmlBuilder = new StringBuilder();
+		htmlBuilder.append("<!DOCTYPE html\r\n" +
+		"<html>\r\n" +
+		"<head>\r\n" +
+		"<title>\r\n" +
+		p.getFileName().toString() +
+		"</title>\r\n" +
+		"</head>\r\n" +
+		"<body>\r\n" +
+		"<b>\r\n" +
+		p.toAbsolutePath().toString().replaceAll("\\\\", "/") + "\r\n" +
+		"</b>\r\n" +
+		"<br />\r\n"
+		);
+		if(serverPath.split("\\/").length > 1) {
+			htmlBuilder.append("<a href=..>..</a>\r\n<br />\r\n");
+		}
+		for(Path entry : dirStream) {
+			htmlBuilder.append("<a href=" + 
+		p.getFileName().toString().replace(rootDir.replaceAll("[\\.\\/]", ""), "") + "/" + 
+		entry.getFileName().toString() + ">" +  
+					entry.getFileName().toString() + "</a>\r\n" +
+		"<br />\r\n");
+		}
+		htmlBuilder.append("</body>\r\n" +
+		"</html>");
+		return htmlBuilder.toString();
+	}
+	
+	/**
+	 * Wrapper for an array of bytes used to store it's content in a HashMap.
+	 * @author WoodenBell
+	 * @version 0.3
+	 * @since 0.3
+	 */
 	
 	public static class ByteArray {
 		public byte[] content;
@@ -87,4 +139,5 @@ public class Util {
 			this.content = content;
 		}
 	}
+	
 }

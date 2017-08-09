@@ -16,6 +16,7 @@ public class ServerConfig {
 	private boolean useCache;
 	private int cacheTime;
 	private boolean debugMode;
+	private boolean showDirView;
 	
 	
 	/**
@@ -29,6 +30,7 @@ public class ServerConfig {
 		cacheTime = 0;
 		mimeTypes  = new HashMap<String, String>();
 		debugMode = false;
+		showDirView = true;
 	}
 	
 	/**
@@ -141,6 +143,14 @@ public class ServerConfig {
 	
 	public boolean getDebugMode() {
 		return debugMode;
+	}
+	
+	public void setShowDirView(boolean showDirView) {
+		this.showDirView = showDirView;
+	}
+	
+	public boolean getShowDirView() {
+		return showDirView;
 	}
 }
 

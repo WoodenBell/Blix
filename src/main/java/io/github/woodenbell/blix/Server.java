@@ -351,7 +351,18 @@ public class Server {
 									System.out.println("index.html found");
 									doStaticGet(req, res, "index.html");
 							} else {
-								httpCodes.get("404").handleRequest(req, res);
+								if(config.getShowDirView()) {
+									System.out.println("Showing dir view");
+									String htmlDirView = Util.htmlDirView(Paths.get(Util.getCWD() +
+											config.getRootDir() + path), path, config.getRootDir());
+									res.sendResponse(200, "OK");
+									res.sendHeader("Content-Type", "text/html");
+									res.endHeaders();
+									res.write(htmlDirView);
+									res.endResponse();
+								} else {
+									httpCodes.get("403").handleRequest(req, res);
+								}
 							}
 						} else {
 							File f3 = new File(config.getRootDir() + path + "/index.htm");
@@ -360,10 +371,32 @@ public class Server {
 									System.out.println("index.htm found");
 									doStaticGet(req, res, "index.htm");
 							} else {
-								httpCodes.get("404").handleRequest(req, res);
+								if(config.getShowDirView()) {
+									System.out.println("Showing dir view");
+									String htmlDirView = Util.htmlDirView(Paths.get(Util.getCWD() +
+											config.getRootDir() + path), path, config.getRootDir());
+									res.sendResponse(200, "OK");
+									res.sendHeader("Content-Type", "text/html");
+									res.endHeaders();
+									res.write(htmlDirView);
+									res.endResponse();
+								} else {
+									httpCodes.get("403").handleRequest(req, res);
+								}		
 							}
 						} else {
-							httpCodes.get("404").handleRequest(req, res);
+							if(config.getShowDirView()) {
+								System.out.println("Showing dir view");
+								String htmlDirView = Util.htmlDirView(Paths.get((Util.getCWD() +
+										config.getRootDir() + path)), path, config.getRootDir());
+								res.sendResponse(200, "OK");
+								res.sendHeader("Content-Type", "text/html");
+								res.endHeaders();
+								res.write(htmlDirView);
+								res.endResponse();
+							} else {
+								httpCodes.get("403").handleRequest(req, res);
+							}
 						}
 				}
 			} 
