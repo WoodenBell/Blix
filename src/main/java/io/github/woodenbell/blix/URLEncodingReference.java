@@ -12,12 +12,27 @@ import java.util.HashMap;
 public class URLEncodingReference {
 	
 	/**
-	 * HashMap containing all URL codes and their respective characters.
+	 * HashMap containing the basic URL codes and their respective characters.
 	 */
 	
 	public static HashMap<String, Character> urlEncoded = new HashMap<>();
+	
+	/**
+	 * HashMap containing characters and their respective URL codes (basic).
+	 */
+	
 	public static HashMap<Character, String> urlDecoded;
+	
+	/**
+	 * HashMap containing all the URL codes and their respective characters.
+	 */
+	
 	public static HashMap<Character, String> fullUrlDecoded;
+	
+	/**
+	 * HashMap containing all the characters and their respective URL codes.
+	 */
+	
 	public static HashMap<String, Character> fullUrlEncoded;
 	
 	static {

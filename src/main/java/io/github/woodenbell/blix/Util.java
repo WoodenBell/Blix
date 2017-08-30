@@ -161,11 +161,12 @@ public class Util {
 	
 	
 	/**
-	 * 
-	 * @param hm
-	 * @return
+	 * Reverses the keys and values of the HashMap.
+	 * @param hm The HashMap of Strings and Characters to have it's keys and values reversed.
+	 * @return The HashMap with reversed keys and values.
 	 */
-	static HashMap<Character, String> reverseKeyVals(HashMap<String, Character> hm) {
+	
+	public static HashMap<Character, String> reverseKeyVals(HashMap<String, Character> hm) {
 		HashMap<Character, String> rhm = new HashMap<>();
 		Iterator<String> iter = hm.keySet().iterator();
 		String curr = null;
@@ -181,6 +182,7 @@ public class Util {
 	 * @param request THe HTTP request body.
 	 * @return If the request is valid.
 	 */
+	
 	public static boolean checkValidHTTPRequest(String request) {
 		
 		if(request.trim().equals("")) return false;
