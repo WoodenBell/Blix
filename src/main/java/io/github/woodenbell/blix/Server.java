@@ -84,6 +84,7 @@ public class Server {
 		postRoutes = new HashMap<String, RequestHandler>();
 		staticController = new StaticAccessController() {
 			public boolean controlStaticRequest(HttpRequest req) {
+				System.out.println("Static request controller: " + true);
 				return true;
 			}
 		};
@@ -230,7 +231,13 @@ public class Server {
 					        lastLineRN = false;
 					        line.append(ch);
 					 }
+					
 					System.out.println(request.toString());
+					if(!Util.checkValidHTTPRequest(request.toString())) {
+						System.out.println("Invalid request");
+						
+						return;
+					}
 					handleRequest(request.toString(), client, out);
 					out.close();
 				} catch(IOException ioe) {
@@ -291,6 +298,7 @@ public class Server {
 				reqDict.put(reqData[i].split(":")[0], reqData[i].split(":")[1].trim());
 			}
 		}
+			
 			HashMap<String, ParsedFormData> form = null;
 			if(reqDict.get("Content-Length") != null) {
 				int[] formData = new int[Integer.parseInt(reqDict.get("Content-Length"))];
@@ -314,10 +322,6 @@ public class Server {
 				}
 				System.out.println("form=" + form);
 				
-			}
-			if(requestData.trim().equals("")) {
-				System.out.println("Headers not found, returning...");
-				return;
 			}
 			String[] reqMethStr = reqData[0].split(" ");
 			String method = reqMethStr[0];
@@ -351,7 +355,7 @@ public class Server {
 									System.out.println("index.html found");
 									doStaticGet(req, res, "index.html");
 							} else {
-								if(config.getShowDirView()) {
+								if(config.getShowDirView() && staticController.controlStaticRequest(req)) {
 									System.out.println("Showing dir view");
 									String htmlDirView = Util.htmlDirView(Paths.get(Util.getCWD() +
 											config.getRootDir() + path), path, config.getRootDir());
@@ -371,7 +375,7 @@ public class Server {
 									System.out.println("index.htm found");
 									doStaticGet(req, res, "index.htm");
 							} else {
-								if(config.getShowDirView()) {
+								if(config.getShowDirView() && staticController.controlStaticRequest(req)) {
 									System.out.println("Showing dir view");
 									String htmlDirView = Util.htmlDirView(Paths.get(Util.getCWD() +
 											config.getRootDir() + path), path, config.getRootDir());
@@ -385,7 +389,7 @@ public class Server {
 								}		
 							}
 						} else {
-							if(config.getShowDirView()) {
+							if(config.getShowDirView() && staticController.controlStaticRequest(req)) {
 								System.out.println("Showing dir view");
 								String htmlDirView = Util.htmlDirView(Paths.get((Util.getCWD() +
 										config.getRootDir() + path)), path, config.getRootDir());
@@ -468,6 +472,7 @@ public class Server {
 		mimeType = config.getMimeType("." + fileExtension);
 		response.sendHeader("Content-Type", mimeType);
 		response.sendHeader("Content-Length", data.length + "");
+		response.sendHeader("Connection", "closed");
 		response.endHeaders();
 		response.writeBytes(data);
 		response.endResponse();

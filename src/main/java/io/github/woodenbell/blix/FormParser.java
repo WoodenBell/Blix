@@ -172,7 +172,7 @@ public class FormParser {
 		StringBuffer stringLine = new StringBuffer();
 		for (int v : data) {
 			c = (char) v;
-			//System.out.print(c);
+			System.out.print(c);
 			if(c == '\r') {
 				//System.out.println("\\r");
 				if(lastCharR) {

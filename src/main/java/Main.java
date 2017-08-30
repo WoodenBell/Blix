@@ -76,11 +76,11 @@ public class Main {
 				fout.close();
 				response.sendResponse(200, "OK");
 				response.sendHeader("Content-Type", s.getConfig().getMimeType(".html"));
+				response.sendHeader("Connection", "closed");
 				response.endHeaders();
 				response.write("File uploaded");
 				response.write("<br /> Name:" + request.getFormValueString("name"));
 				response.write("<br /> Name2:" + request.getFormValueString("name2"));
-				response.write("<br /> Name3:" + request.getFormValueString("name3"));
 				response.endResponse();
 			}
 		});
